@@ -33,3 +33,13 @@ databaseChangeLog:
             columns:
               - column:
                   name: event_id
+  - changeSet:
+      id: add-mock-data
+      author: v.chalenko
+      changes:
+        - sql:
+            sql: |
+              INSERT INTO bets (id, user_id, event_id, event_market_id, event_winner_id, amount)
+              VALUES
+                ('97159469-1d83-4889-8785-f36ea77b3aae', '101cbc0f-5ab1-47c7-8161-80bc5b9dc179', '40575836-5ad7-4512-bf67-3016966a42c4', '123e4567-e89b-12d3-a456-426614174000', '123e4567-e89b-12d3-a456-426614174000', 100.00),
+                ('2a337aaa-0c06-4617-951a-e07f1832b107', '2dbc6486-08ef-4449-a188-470e9e60a7b7', '40575836-5ad7-4512-bf67-3016966a42c4', '06de6da6-13b9-4567-8b5a-eae2f7d765c6', 'ed6d8507-5ea2-469a-924c-ed471b75c87c', 250.00)
