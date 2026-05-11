@@ -6,6 +6,7 @@ import org.bajiepka.betting.dto.OutcomeEventDto;
 import org.bajiepka.betting.service.OutcomesEventService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -13,17 +14,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaConsumerService {
 
-    private final OutcomesEventService outcomesEventService;
+  private final OutcomesEventService outcomesEventService;
 
-    @KafkaListener(topics = "event-outcomes", groupId = "outcomes-group")
-    public void consumeOutcomeEvent(OutcomeEventDto outcomeEventDto, Acknowledgment ack) {
-        log.info("Consumed outcome event from Kafka: {}", outcomeEventDto);
-        try {
-            outcomesEventService.publishSettleBets(outcomeEventDto);
-            ack.acknowledge();
-            log.info("Acknowledged Kafka event: {}", outcomeEventDto.id());
-        } catch (Exception e) {
-            log.error("Failed to process and settle bets for event: {}. Message will not be acknowledged.", outcomeEventDto.id(), e);
-        }
-    }
+  @Async
+  @KafkaListener(topics = "event-outcomes", groupId = "outcomes-group")
+  public void consumeOutcomeEvent(OutcomeEventDto outcomeEventDto, Acknowledgment ack) {
+
+    Runnable successCallback = () -> {
+      ack.acknowledge();
+      log.info("Acknowledged Kafka event: {}", outcomeEventDto.id());
+    };
+
+    Runnable failureCallback = () -> log.error(
+        "Failed to process and settle bets for event: {}. Message will not be acknowledged.",
+        outcomeEventDto.id()
+    );
+
+    outcomesEventService.publishSettleBetsAsync(outcomeEventDto, successCallback, failureCallback);
+
+    log.info("Consumed outcome event from Kafka: {}", outcomeEventDto);
+  }
 }

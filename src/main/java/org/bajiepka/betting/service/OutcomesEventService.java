@@ -2,7 +2,6 @@ package org.bajiepka.betting.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.bajiepka.betting.dto.OutcomeEventDto;
 import org.bajiepka.betting.dto.SettleBetEventDto;
 import org.bajiepka.betting.kafka.KafkaProducerService;
@@ -15,9 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OutcomesEventService {
 
+  private final SettlementEventService settlementEventService;
   private final KafkaProducerService kafkaProducerService;
   private final BetRepository betRepository;
-  private final RocketMQTemplate rocketMQTemplate;
 
   public void processEvent(OutcomeEventDto outcomeEventDto) {
     log.info("Processing event: {}", outcomeEventDto);
@@ -25,15 +24,31 @@ public class OutcomesEventService {
   }
 
   @Transactional(readOnly = true)
-  public void publishSettleBets(OutcomeEventDto outcomeEventDto) {
+  public void publishSettleBetsAsync(
+      OutcomeEventDto outcomeEventDto,
+      Runnable onSuccess,
+      Runnable onFailure
+  ) {
 
-    var settlements = betRepository.findAllByEventId(outcomeEventDto.id()).stream()
-        .map(bet -> new SettleBetEventDto(bet.getEventWinnerId(), bet.getAmount()))
-        .toList();
+    try {
 
-    if (!settlements.isEmpty()) {
-      rocketMQTemplate.syncSend("settle-bets-topic", settlements);
-      log.info("Settled bets for event: {}", outcomeEventDto.id());
+      var betsByEvent = betRepository.findAllByEventId(outcomeEventDto.id());
+
+      if (betsByEvent.isEmpty()) {
+        onFailure.run();
+        return;
+      }
+
+      var settlements = betsByEvent.stream()
+          .map(bet -> new SettleBetEventDto(bet.getEventWinnerId(), bet.getAmount()))
+          .toList();
+
+      settlementEventService.settleBetsAsync(settlements, onSuccess, onFailure);
+      log.info("Initiated async settlement for event: {}", outcomeEventDto.id());
+
+    } catch (Exception e) {
+      log.error("Settlement unexpected exception by event: {}", outcomeEventDto.id(), e);
+      onFailure.run();
     }
   }
 }
