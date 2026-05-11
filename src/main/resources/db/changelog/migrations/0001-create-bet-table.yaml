@@ -1,0 +1,25 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: create-table-bets
+      author: v.chalenko
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            tableExists:
+              tableName: bets
+      changes:
+        - createTable:
+            tableName: bets
+            remarks: Bets table
+            columns:
+              - column: { name: id, type: uuid, constraints: { primaryKey: true, nullable: false } }
+              - column: { name: user_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: event_id, type: uuid, constraints: { nullable: false } }
+              - column: { name: event_market_id, type: uuid, constraints: { nullable: false, unique: true } }
+              - column: { name: event_winner_id, type: uuid,  constraints: { nullable: false } }
+              - column:
+                  name: amount
+                  type: decimal(10,2)
+                  constraints:
+                    nullable: false
