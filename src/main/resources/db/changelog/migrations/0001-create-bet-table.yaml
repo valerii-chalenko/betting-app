@@ -23,3 +23,13 @@ databaseChangeLog:
                   type: decimal(10,2)
                   constraints:
                     nullable: false
+  - changeSet:
+      id: create-event-id-index
+      author: v.chalenko
+      changes:
+        - createIndex:
+            indexName: idx_bets_event_id
+            tableName: bets
+            columns:
+              - column:
+                  name: event_id

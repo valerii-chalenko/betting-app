@@ -2,7 +2,7 @@ package org.bajiepka.betting.controller;
 
 import jakarta.validation.Valid;
 import org.bajiepka.betting.dto.OutcomeEventDto;
-import org.bajiepka.betting.service.EventService;
+import org.bajiepka.betting.service.OutcomesEventService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/events")
 public class EventController {
 
-  private final EventService eventService;
+  private final OutcomesEventService outcomesEventService;
 
-  public EventController(EventService eventService) {
-    this.eventService = eventService;
+  public EventController(OutcomesEventService outcomesEventService) {
+    this.outcomesEventService = outcomesEventService;
   }
 
   @PostMapping
   public void processEvent(
       @Valid @RequestBody OutcomeEventDto outcomeEventDto
   ) {
-    eventService.processEvent(outcomeEventDto);
+    outcomesEventService.processEvent(outcomeEventDto);
   }
 }
