@@ -1,0 +1,9 @@
+###
+POST http://localhost:8080/api/v1/events
+Content-Type: application/json
+
+{
+  "id": "40575836-5ad7-4512-bf67-3016966a42c4",
+  "winnerId": "18935861-3ea6-4d7f-bc4f-a731a8dec151",
+  "name": "Some name"
+}

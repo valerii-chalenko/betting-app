@@ -6,9 +6,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "bet")
+@Table(name = "bets")
 public class Bet {
 
     @Id
@@ -29,52 +33,4 @@ public class Bet {
 
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    public UUID getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(UUID eventId) {
-        this.eventId = eventId;
-    }
-
-    public UUID getEventMarketId() {
-        return eventMarketId;
-    }
-
-    public void setEventMarketId(UUID eventMarketId) {
-        this.eventMarketId = eventMarketId;
-    }
-
-    public UUID getEventWinnerId() {
-        return eventWinnerId;
-    }
-
-    public void setEventWinnerId(UUID eventWinnerId) {
-        this.eventWinnerId = eventWinnerId;
-    }
-
-    public BigDecimal getAmount() {
-        return amount;
-    }
-
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
-    }
 }
