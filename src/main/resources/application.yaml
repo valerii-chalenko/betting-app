@@ -47,6 +47,6 @@ spring:
       enabled: true
 
 rocketmq:
-#  name-server: localhost:9876
+  enabled: ${ROCKETMQ_ENABLED:true}
   name-server: ${ROCKETMQ_NAME_SERVER:localhost:9876}
   producer.group: settle-bets-topic

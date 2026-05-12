@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OutcomesEventService {
 
-  private final SettlementEventService settlementEventService;
+  private final SettlementService settlementService;
   private final KafkaProducerService kafkaProducerService;
   private final BetRepository betRepository;
 
@@ -39,12 +39,13 @@ public class OutcomesEventService {
         return;
       }
 
-      var settlements = betsByEvent.stream()
-          .map(bet -> new SettleBetEventDto(bet.getEventWinnerId(), bet.getAmount()))
-          .toList();
-
-      settlementEventService.settleBetsAsync(settlements, onSuccess, onFailure);
-      log.info("Initiated async settlement for event: {}", outcomeEventDto.id());
+      settlementService.settleBetsAsync(
+          betsByEvent.stream()
+              .map(bet -> new SettleBetEventDto(bet.getEventWinnerId(), bet.getAmount()))
+              .toList(),
+          onSuccess,
+          onFailure
+      );
 
     } catch (Exception e) {
       log.error("Settlement unexpected exception by event: {}", outcomeEventDto.id(), e);
