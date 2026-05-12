@@ -1,5 +1,28 @@
 services:
 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    networks:
+      - backend-network
+    ports:
+      - 8081:8081
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 450m
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      ROCKETMQ_NAME_SERVER: namesrv:9876
+    depends_on:
+      - namesrv
+      - broker
+      - kafka-zookeeper
+      - kafka
+
   namesrv:
     container_name: rocketmq-namesrv
     image: apache/rocketmq:5.4.0
@@ -8,7 +31,7 @@ services:
     networks:
       - backend-network
     ports:
-      - "127.0.0.1:9876:9876"
+      - 9876:9876
     command: sh ./mqnamesrv
 
   broker:
@@ -25,30 +48,19 @@ services:
         fileReservedTime = 48
         brokerRole = ASYNC_MASTER
         flushDiskType = ASYNC_FLUSH
-        brokerIP1=localhost
+        brokerIP1=0.0.0.0
     networks:
       - backend-network
     ports:
-      # Dashboard pass through
-      - "127.0.0.1:8080:8080"
-      - "127.0.0.1:10909:10909"
-      - "127.0.0.1:10911:10911"
-      - "127.0.0.1:10912:10912"
+      - 10909:10909
+      - 10911:10911
+      - 10912:10912
     command: |
       bash -c '
       mkdir -p /home/rocketmq/conf && 
       echo "$$BROKER_CONF" > /home/rocketmq/conf/broker.conf && 
       ./mqbroker -c /home/rocketmq/conf/broker.conf
       '
-
-  dashboard:
-    container_name: rocketmq-dashboard
-    image: apacherocketmq/rocketmq-dashboard:2.1.0
-    # Access broker with localhost, port 8080 exposed in broker service
-    networks:
-      - backend-network
-    environment:
-      JAVA_OPTS: -Drocketmq.namesrv.addr=namesrv:9876
 
   # Kafka
   kafka-zookeeper:
@@ -72,7 +84,10 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: kafka-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      # Где Kafka реально слушает внутри контейнера
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      # Какие адреса Kafka отдаёт клиентам
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://kafka:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
