@@ -1,4 +1,4 @@
-FROM amazoncorretto:25-alpine
+FROM amazoncorretto:21-alpine
 
 VOLUME /tmp
 COPY target/*.jar application.jar
