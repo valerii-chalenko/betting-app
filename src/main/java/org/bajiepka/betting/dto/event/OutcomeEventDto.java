@@ -1,4 +1,4 @@
-package org.bajiepka.betting.dto;
+package org.bajiepka.betting.dto.event;
 
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;

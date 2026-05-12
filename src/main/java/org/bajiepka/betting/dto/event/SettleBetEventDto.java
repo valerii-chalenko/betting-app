@@ -1,4 +1,4 @@
-package org.bajiepka.betting.dto;
+package org.bajiepka.betting.dto.event;
 
 import java.math.BigDecimal;
 import java.util.UUID;

@@ -1,7 +1,7 @@
 package org.bajiepka.betting.controller;
 
 import jakarta.validation.Valid;
-import org.bajiepka.betting.dto.OutcomeEventDto;
+import org.bajiepka.betting.dto.event.OutcomeEventDto;
 import org.bajiepka.betting.service.OutcomesEventService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

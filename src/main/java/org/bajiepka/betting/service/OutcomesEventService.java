@@ -2,10 +2,11 @@ package org.bajiepka.betting.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bajiepka.betting.dto.OutcomeEventDto;
-import org.bajiepka.betting.dto.SettleBetEventDto;
-import org.bajiepka.betting.kafka.KafkaProducerService;
-import org.bajiepka.betting.repository.BetRepository;
+import org.bajiepka.betting.dto.event.OutcomeEventDto;
+import org.bajiepka.betting.dto.event.SettleBetEventDto;
+import org.bajiepka.betting.service.kafka.KafkaProducerService;
+import org.bajiepka.betting.database.BetRepository;
+import org.bajiepka.betting.service.rocketmq.SettlementService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

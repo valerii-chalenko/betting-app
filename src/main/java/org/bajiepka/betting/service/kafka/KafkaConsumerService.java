@@ -1,10 +1,9 @@
-package org.bajiepka.betting.kafka;
+package org.bajiepka.betting.service.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bajiepka.betting.dto.OutcomeEventDto;
+import org.bajiepka.betting.dto.event.OutcomeEventDto;
 import org.bajiepka.betting.service.OutcomesEventService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.scheduling.annotation.Async;

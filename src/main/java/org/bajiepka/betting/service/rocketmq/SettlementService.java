@@ -1,7 +1,7 @@
-package org.bajiepka.betting.service;
+package org.bajiepka.betting.service.rocketmq;
 
 import java.util.List;
-import org.bajiepka.betting.dto.SettleBetEventDto;
+import org.bajiepka.betting.dto.event.SettleBetEventDto;
 
 public interface SettlementService {
 

@@ -1,9 +1,9 @@
-package org.bajiepka.betting.rocketmq;
+package org.bajiepka.betting.service.rocketmq;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.bajiepka.betting.dto.SettleBetEventDto;
+import org.bajiepka.betting.dto.event.SettleBetEventDto;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
